@@ -83,11 +83,39 @@ def write(protein_df):
     f.close()
     print('exported out.fa')
 
-def drop_duplicates(protein_df, keep=False):
+def manipulate_duplicates(protein_df, keep=False):
     protein_df = protein_df.drop_duplicates(subset=['sequence', 'families'], keep='first')
     print(f'Unique protein DF shape: {protein_df.shape}')
 
-    protein_df = protein_df.drop_duplicates(subset=['sequence'], keep=keep)
-    print(f'Dropped unmatched family protein DF shape: {protein_df.shape}')
+    if keep == 'union':
+        temp_df = pd.DataFrame()
+        for sequence in protein_df.loc[protein_df.duplicated(subset=['sequence'])]['sequence']:
+            duplicated_set_df = protein_df.loc[protein_df['sequence'] == sequence]
+            temp_row = duplicated_set_df.head(1)
+
+            temp_family = ''
+            for _, row in duplicated_set_df.iterrows():
+                temp_family += row['families']
+                temp_family += '|'
+
+            temp_family = temp_family[:-1]
+            temp_row['families'] = temp_family
+
+            temp_df = temp_df.append(temp_row)
+
+        protein_df = protein_df.drop_duplicates(subset=['sequence'], keep=False)
+        protein_df = protein_df.append(temp_df)
+
+    else:
+        protein_df = protein_df.drop_duplicates(subset=['sequence'], keep=keep)
+
+    protein_df = protein_df.reset_index(drop=True)
+
+    for i in range(len(protein_df)):
+        families = protein_df.loc[i, 'families']
+
+        protein_df.loc[i, 'families'] = ''
+
+    print(f'Manipulated unmatched family protein (keep=\"{keep}\") DF shape: {protein_df.shape}')
 
     return protein_df
