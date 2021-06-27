@@ -11,8 +11,13 @@ class Protein:
     def to_list(self):
         return [self.id, self.families, self.sequence]
 
-    def get_word(self, k=default_k):
-        pass
+    def get_word(self, at, k=default_k):
+        word = ''
+
+        if at + k < self.sequence_len:
+            word = self.sequence[self.pointer : self.pointer+k]
+        return word
+
 
     def __iter__(self):
         self.pointer = -1
