@@ -1,13 +1,15 @@
-from Fast.ProteinIO import FastaIO
 from pathlib import Path
 import os
 
-from Fast.ProteinIO import FastaIO
+from proteinIO import fastaIO
+from profast.kmer import KMerClassifier
 
 __file__ = os.getcwd()
 paths = [Path(__file__) / 'data' / 'dbCAN2' / 'CAZyDB.mini.fa']
 
-proteins = FastaIO.read(paths)
-proteins = FastaIO.drop_duplicates(proteins)
+proteins = fastaIO.read(paths)
+proteins = fastaIO.drop_duplicates(proteins)
 
-FastaIO.write(proteins)
+fastaIO.write(proteins)
+
+kmc = KMerClassifier()
