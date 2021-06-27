@@ -1,4 +1,5 @@
 import pandas as pd
+from proteinIO.protein import Protein
 
 
 def manipulate_duplicates(protein_df, keep=False):
@@ -57,3 +58,11 @@ def manipulate_duplicates(protein_df, keep=False):
     print(f'Manipulated unmatched family protein (keep=\"{keep}\") DF shape: {protein_df.shape}')
 
     return protein_df
+
+def series2object(df):
+    elements = []
+    for _, row in df.iterrows():
+        elements.append(Protein(id=row['id'],
+                                families=[family.split('_') for family in row['families'].split('|')],
+                                sequence=row['sequence']))
+    return elements

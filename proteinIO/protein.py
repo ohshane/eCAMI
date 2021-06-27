@@ -1,23 +1,33 @@
-default_k = 8
-
 class Protein:
-    def __init__(self, id='', families='', sequence='', k=default_k):
+    def __init__(self, id='', families='', sequence=''):
         self.id = id
         self.families = families
         self.sequence = sequence
         self.sequence_len = len(sequence)
-        self.k = int(k)
         
     def to_list(self):
         return [self.id, self.families, self.sequence]
 
-    def get_word(self, at, k=default_k):
-        word = ''
+    def get_word(self, at, k):
+        if self._check_k(k):
+            word = None
 
-        if at + k < self.sequence_len:
-            word = self.sequence[self.pointer : self.pointer+k]
-        return word
+            if at + k < self.sequence_len:
+                word = self.sequence[self.pointer : self.pointer+k]
+            return word
+            
+        raise Exception('[ERROR] Set k for k-mer')
 
+    def _check_k(self, k):
+        if isinstance(k, int) and k > 0:
+            return True
+        return False
+
+    def __call__(self, k):
+        if self._check_k(k):
+            self.k = k
+            return self
+        raise Exception('[ERROR] Invalid k value')
 
     def __iter__(self):
         self.pointer = -1
@@ -35,6 +45,7 @@ class Protein:
 
     def __next__(self):
         if self.pointer + self.k > self.sequence_len - 1:
+            delattr(self, 'k')
             raise StopIteration
 
         self.pointer += 1
@@ -45,4 +56,4 @@ class Protein:
     def __repr__(self):
         return f'''\r{self.id}
         \r{self.families}
-        \r{self.sequence[:20]}...{len(self.sequence)}...{self.sequence[-5:]}'''
+        \r{self.sequence[:20]}...{len(self.sequence)}...{self.sequence[-5:]}\n'''

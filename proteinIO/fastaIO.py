@@ -2,7 +2,7 @@ from tqdm import tqdm
 import pandas as pd
 import os
 
-from Fast.ProteinIO.Protein import Protein
+from proteinIO.protein import Protein
 
 
 def read(*paths):
