@@ -2,4 +2,4 @@
 ## proteinIO
 package for data preprocessing
 ## profast
-package for kmer based training
+package for k-mer based training
