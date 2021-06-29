@@ -66,3 +66,43 @@ def series2object(df):
                                 families=[family.split('_') for family in row['families'].split('|')],
                                 sequence=row['sequence']))
     return elements
+
+def shape(elements):
+    def append_key(family_dict, family_levels, desc):
+        total_levels = len(family_levels)
+        
+        cw_dict = family_dict
+        
+        for i in range(total_levels):
+            if family_levels[i] not in cw_dict:
+                cw_dict[family_levels[i]] = {
+                    '_ex_count' : 0,
+                    '_count' : 1,
+                    '_elements' : [],
+                }
+                
+            else:
+                cw_dict[family_levels[i]]['_count'] += 1
+            
+            if desc not in cw_dict[family_levels[i]]['_elements']:
+                cw_dict[family_levels[i]]['_elements'].append(desc)
+            cw_dict = cw_dict[family_levels[i]]
+            
+            if i == total_levels-1 :
+                cw_dict['_ex_count'] += 1
+                # cw_dict['_elements'].append(desc)
+
+    family_dict = {}
+    for i, element in enumerate(elements):
+        for family_levels in element.families:
+            append_key(family_dict, family_levels, i)
+
+    data = {
+        'family' : family_dict.keys(),
+        'count' : [family_dict[key]['_count'] for key in family_dict.keys()],
+        'subfamily ratio' : [100 - family_dict[key]['_ex_count']*100/family_dict[key]['_count'] for key in family_dict.keys()],
+    }
+    df = pd.DataFrame(data)
+    print(df.sort_values(by=['subfamily ratio', 'count'], ascending=False).reset_index(drop=True))
+
+    return family_dict
