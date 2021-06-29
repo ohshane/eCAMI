@@ -18,28 +18,28 @@ class Protein:
             
         raise Exception('[ERROR] Set k for k-mer')
 
-    def get_index(self, word):
-        if not isinstance(word, str):
-            raise Exception('[ERROR] word error')
-        word = word.strip().upper()
-        k = len(word)
-        index = -1
-        for i, w in iter(self(k)):
-            if w == word:
-                index = i
-                break
-        return index
+    # def get_index(self, word):
+    #     if not isinstance(word, str):
+    #         raise Exception('[ERROR] word error')
+    #     word = word.strip().upper()
+    #     k = len(word)
+    #     index = -1
+    #     for i, w in iter(self(k)):
+    #         if w == word:
+    #             index = i
+    #             break
+    #     return index
 
-    def get_indexes(self, word):
-        if not isinstance(word, str):
-            raise Exception('[ERROR] word error')
-        word = word.strip().upper()
-        k = len(word)
-        indexes = []
-        for i, w in iter(self(k)):
-            if w == word:
-                indexes.append(i)
-        return indexes
+    # def get_indexes(self, word):
+    #     if not isinstance(word, str):
+    #         raise Exception('[ERROR] word error')
+    #     word = word.strip().upper()
+    #     k = len(word)
+    #     indexes = []
+    #     for i, w in iter(self(k)):
+    #         if w == word:
+    #             indexes.append(i)
+    #     return indexes
 
     def _check_k(self, k):
         if isinstance(k, int) and k > 0:
@@ -69,6 +69,7 @@ class Protein:
     def __next__(self):
         if self.pointer + self.k > self.sequence_len - 1:
             delattr(self, 'k')
+            delattr(self, 'pointer')
             raise StopIteration
 
         self.pointer += 1
