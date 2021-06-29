@@ -1,4 +1,6 @@
 import threading
+import multiprocessing
+import copy
 
 class KMerClassifier():
     def __init__(self, *, alpha=2, beta=0.9):
@@ -25,10 +27,19 @@ class KMerClassifier():
         print(f'fitting families:\n{sorted(self.families)}')
 
         def family_fit(family):
-            for i in shape[family]['_elements']:
-                for w in iter(self.X[i](self.k)):
-                    print(family, i, w)
+            def word_to_matrix(matrix, protein_no):
+                protein = copy.deepcopy(self.X[protein_no])
+                for pointer, word in iter(protein(self.k)):
+                    pass
 
+            matrix = {}
+            for i in shape[family]['_elements']:
+                t = threading.Thread(target=word_to_matrix, args=(matrix, i,))
+
+        family_fit_processes = []
         for family in self.families:
-            t = threading.Thread(target=family_fit, args=(family,))
-            t.start()
+            p = multiprocessing.Process(target=family_fit, args=(family,))
+            p.name = family
+            p.daemon = False
+            family_fit_processes.append(p)
+            p.start()
