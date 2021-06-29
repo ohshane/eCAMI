@@ -100,6 +100,7 @@ def shape(elements):
     data = {
         'family' : family_dict.keys(),
         'count' : [family_dict[key]['_count'] for key in family_dict.keys()],
+        'unique protein count' : [len(family_dict[key]['_elements']) for key in family_dict.keys()],
         'subfamily ratio' : [100 - family_dict[key]['_ex_count']*100/family_dict[key]['_count'] for key in family_dict.keys()],
     }
     df = pd.DataFrame(data)

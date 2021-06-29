@@ -46,7 +46,7 @@ class Protein:
             return True
         return False
 
-    def __call__(self, *, k):
+    def __call__(self, k):
         if self._check_k(k):
             self.k = k
             return self
