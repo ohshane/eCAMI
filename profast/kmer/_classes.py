@@ -38,12 +38,15 @@ class KMerClassifier():
                     else:
                         words[word] = 1
 
+                del protein
+
                 for word in words.keys():
                     if word in matrix:
                         matrix[word][protein_no] = words[word]
                     else:
                         matrix[word] = {protein_no : None}
                         matrix[word][protein_no] = words[word]
+
 
             matrix = {}
             threads = []
@@ -71,5 +74,5 @@ class KMerClassifier():
         for p in family_fit_processes:
             p.join()
 
+        self.matrix_group = return_dict
         print(return_dict)
-        return return_dict
